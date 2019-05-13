@@ -9,7 +9,20 @@ const assets = JSON.parse(
 )
 
 const app = Express()
-app.use(Express.static(path.resolve(process.cwd(), './build')))
+
+// We generate all the js files in the same folder
+// But we don't want to render server.js or server.js.map
+app.use((req, res, next) => {
+  if (req.path.match(/server\.js/)) {
+    return res.status(404).end('Not Found')
+  }
+  next()
+})
+
+app.use(
+  Express.static(path.resolve(process.cwd(), './build'), { index: false })
+)
+
 app.get('*', makeServerMiddleware(assets))
 app.listen(PORT, () => {
   console.log(`App is listening on http://localhost:${PORT}`)
