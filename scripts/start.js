@@ -116,7 +116,25 @@ checkBrowsers(paths.appPath, isInteractive)
 
     const devServer = new WebpackDevServer(compiler, {
       ...devServerConfig,
-      before: (app, server, compiler) =>
+      before: (app, server, compiler) => {
+        // Helper function to turn snake_case to camelCase
+        const camelize = str => {
+          return str
+            .replace('-', ' ')
+            .replace(/(?:^\w|[A-Z]|\b\w)/g, function(word, index) {
+              return index == 0 ? word.toLowerCase() : word.toUpperCase()
+            })
+            .replace(/\s+/g, '')
+        }
+
+        app.get('/_icon/:name', (req, res) => {
+          const name = req.params.name
+          const iconName = camelize('fa-' + name)
+          const icon = require('@fortawesome/free-solid-svg-icons/' + iconName)
+          res.setHeader('Content-Type', 'application/json')
+          res.send(JSON.stringify(icon))
+        })
+
         app.use((req, res, next) => {
           if (/\./.test(req.path)) return next()
           try {
@@ -142,7 +160,8 @@ checkBrowsers(paths.appPath, isInteractive)
             // not ready yet
           }
           return next()
-        }),
+        })
+      },
     })
 
     // Launch WebpackDevServer.
