@@ -1,6 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 const Express = require('express')
+const shrinkRay = require('shrink-ray-current')
 const { default: makeServerMiddleware } = require('./build/server')
 const PORT = 3000
 
@@ -9,7 +10,7 @@ const assets = JSON.parse(
 )
 
 const app = Express()
-
+app.use(shrinkRay())
 // We generate all the js files in the same folder
 // But we don't want to render server.js or server.js.map
 app.use((req, res, next) => {
