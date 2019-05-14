@@ -13,17 +13,17 @@ const makeServerMiddleware = ({ files }) => {
   // Returns middleware
   return async (req, res) => {
     const [currentRoute] = matchRoutes(routes, req.path)
-    const props = {}
+    const state = {}
     if (
       currentRoute &&
       currentRoute.match &&
       currentRoute.match.path === '/icon/:name'
     ) {
-      props.icon = await getIcon(currentRoute.match.params.name)
+      state.icon = await getIcon(currentRoute.match.params.name)
     }
     const renderedApp = ReactDOMServer.renderToString(
       <StaticRouter location={req.path} context={{ req, res }}>
-        <App {...props} />
+        <App {...state} />
       </StaticRouter>
     )
     const helmet = Helmet.renderStatic()
@@ -44,6 +44,7 @@ const makeServerMiddleware = ({ files }) => {
       <body ${helmet.bodyAttributes.toString()}>
         <noscript>You need to enable JavaScript to run this app.</noscript>
         <div id="root">${renderedApp}</div>
+        <script>window.APP_STATE=${JSON.stringify(state)}</script>
         ${scripts}
       </body>
     </html>`

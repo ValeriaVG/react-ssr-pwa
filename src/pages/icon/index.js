@@ -11,12 +11,20 @@ export default class Icon extends React.PureComponent {
   }
 
   async loadIcon() {
-    try {
-      const icon = await getIcon(this.props.match.params.name)
-      if (!icon) return this.setState({ notFound: true })
-      this.library.add(icon)
-    } catch (error) {
-      // console.error('loading error:', error)
+    const iconName = this.props.match.params.name
+
+    if (
+      !this.library.definitions.fas ||
+      !this.library.definitions.fas[iconName]
+    ) {
+      // Load icon only if it doesn't exist in the library
+      try {
+        const icon = await getIcon(iconName)
+        if (!icon) return this.setState({ notFound: true })
+        this.library.add(icon)
+      } catch (error) {
+        // console.error('loading error:', error)
+      }
     }
     this.setState({ isLoaded: true })
   }
@@ -26,6 +34,10 @@ export default class Icon extends React.PureComponent {
     const { FontAwesomeIcon } = await import('@fortawesome/react-fontawesome')
     this.library = library
     this.FontAwesomeIcon = FontAwesomeIcon
+
+    if (window.APP_STATE && window.APP_STATE.icon) {
+      this.library.add(window.APP_STATE.icon.definition)
+    }
     await this.loadIcon()
   }
 
