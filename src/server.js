@@ -2,16 +2,28 @@ import React from 'react'
 import ReactDOMServer from 'react-dom/server'
 import { StaticRouter } from 'react-router'
 import { Helmet } from 'react-helmet'
+import { matchRoutes } from 'react-router-config'
+import routes from './routes'
 import App from './App'
 import renderAssets from './lib/renderAssets'
+import getIcon from './pages/icon/getIcon'
 
 const makeServerMiddleware = ({ files }) => {
   const { cssLinks, scripts } = renderAssets(files)
   // Returns middleware
-  return (req, res) => {
+  return async (req, res) => {
+    const [currentRoute] = matchRoutes(routes, req.path)
+    const props = {}
+    if (
+      currentRoute &&
+      currentRoute.match &&
+      currentRoute.match.path === '/icon/:name'
+    ) {
+      props.icon = await getIcon(currentRoute.match.params.name)
+    }
     const renderedApp = ReactDOMServer.renderToString(
       <StaticRouter location={req.path} context={{ req, res }}>
-        <App />
+        <App {...props} />
       </StaticRouter>
     )
     const helmet = Helmet.renderStatic()

@@ -14,8 +14,10 @@
     "react-dom": "^16.8.6",
     "react-helmet": "^5.2.1",
     "react-router": "^5.0.0",
+    "react-router-config": "^5.0.0",
     "react-router-dom": "^5.0.0",
-    "shrink-ray-current": "^4.0.0"
+    "shrink-ray-current": "^4.0.0",
+    "universal-fetch": "^1.0.0"
   },
   "devDependencies": {
     "html-loader": "^0.5.5",

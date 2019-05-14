@@ -1,18 +1,9 @@
-import React from 'react'
-import { Switch, Route } from 'react-router'
+import { renderRoutes } from 'react-router-config'
+import routes from './routes'
 import './App.css'
-import Home from './pages/home'
-import Icon from './pages/icon'
-import NotFound from './pages/404'
 
-function App() {
-  return (
-    <Switch>
-      <Route path="/" component={Home} exact />
-      <Route path="/icon/:name" component={Icon} exact />
-      <Route path="**" component={NotFound} />
-    </Switch>
-  )
+function App(props) {
+  return renderRoutes(routes, props)
 }
 
 export default App
