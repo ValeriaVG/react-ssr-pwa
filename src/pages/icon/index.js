@@ -18,10 +18,11 @@ export default class Icon extends React.PureComponent {
       !this.library.definitions.fas[iconName]
     ) {
       // Load icon only if it doesn't exist in the library
+      this.setState({ isLoaded: false })
       try {
         const icon = await getIcon(iconName)
         if (!icon) return this.setState({ notFound: true })
-        this.library.add(icon)
+        this.library.add(icon.definition)
       } catch (error) {
         // console.error('loading error:', error)
       }
