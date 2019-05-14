@@ -2,15 +2,18 @@ import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import getIcon from './getIcon'
+import NotFound from '../404'
 
 export default class Icon extends React.PureComponent {
   state = {
     isLoaded: false,
+    notFound: false,
   }
 
   async loadIcon() {
     try {
       const icon = await getIcon(this.props.match.params.name)
+      if (!icon) return this.setState({ notFound: true })
       this.library.add(icon)
     } catch (error) {
       // console.error('loading error:', error)
@@ -36,6 +39,7 @@ export default class Icon extends React.PureComponent {
   }
 
   render() {
+    if (this.state.notFound) return <NotFound />
     const name = this.props.match.params.name
     return (
       <>
