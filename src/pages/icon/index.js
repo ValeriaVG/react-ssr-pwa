@@ -1,6 +1,7 @@
 import React from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
+import getIcon from './getIcon'
 
 export default class Icon extends React.PureComponent {
   state = {
@@ -9,9 +10,7 @@ export default class Icon extends React.PureComponent {
 
   async loadIcon() {
     try {
-      const icon = await fetch(`/_icon/${this.props.match.params.name}`).then(
-        res => res.json()
-      )
+      const icon = await getIcon(this.props.match.params.name)
       this.library.add(icon)
     } catch (error) {
       // console.error('loading error:', error)
