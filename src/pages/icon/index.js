@@ -51,10 +51,8 @@ export default class Icon extends React.PureComponent {
   }
 
   render() {
-    if (this.props.staticContext && !this.props.icon) {
-      this.props.staticContext.res.statusCode = 404
-    }
-    if (this.state.notFound) return <NotFound />
+    if ((this.props.staticContext && !this.props.icon) || this.state.notFound)
+      return <NotFound {...this.props} />
     const name = this.props.match.params.name
     return (
       <>
